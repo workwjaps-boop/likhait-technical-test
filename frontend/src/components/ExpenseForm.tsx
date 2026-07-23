@@ -10,15 +10,19 @@ import { useExpenseForm } from "../hooks/useExpenseForm";
 
 interface ExpenseFormProps {
   initialData?: Partial<ExpenseFormData>;
+  categories: Array<{ id: number; name: string }>;
   onSubmit: (data: ExpenseFormData) => Promise<void>;
+  onAddCategory: () => void;
   onCancel?: () => void;
   submitLabel?: string;
 }
 
 export function ExpenseForm({
   initialData,
-  onSubmit,
-  onCancel,
+  categories={categories}
+  onSubmit={handleAddExpense}
+  onAddCategory={() => setIsCategoryModalOpen(true)}
+  onCancel={() => setIsModalOpen(false)}
   submitLabel = "Add Expense",
 }: ExpenseFormProps) {
   const { formData, errors, isSubmitting, handleChange, handleSubmit } =
@@ -39,10 +43,10 @@ export function ExpenseForm({
     marginTop: "0.5rem",
   };
 
-  const categoryOptions = EXPENSE_CATEGORIES.map((category) => ({
-    value: category,
-    label: category,
-  }));
+const categoryOptions = categories.map((category) => ({
+  value: category.name,
+  label: category.name,
+}));
 
   return (
     <form onSubmit={handleSubmit} style={formStyle}>
@@ -78,6 +82,14 @@ export function ExpenseForm({
         fullWidth
         required
       />
+
+      <Button
+  type="button"
+  variant="secondary"
+  onClick={onAddCategory}
+>
+  + Add Category
+</Button>
 
       <TextField
         label="Date"
